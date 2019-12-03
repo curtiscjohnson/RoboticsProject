@@ -3,72 +3,98 @@
 %Date: 2019-11-19
 % Dependencies: MATLAB-GJK-Collision-Detection by Matthew Sheen (github:mws262)
 %               Baxter model (BYU: ME537)
-function [collide] = collisiondetect(q, sphere)
+%function [collide] = collisiondetect(q, sphere)
 % Output: Bool: 0 = no collision, 1 = collision
-% Input: q as vector in radians, sphere as [x y z r] in mm
+% Input: q as vector in radians, sphere as [x y z r] in m
+
+clear armcloud  %%% DEBUG
 
 %Check Variables:
-if size(q,2) ~= 1
-    fprintf("Correct format for q:[q1 q2 q3 q4 q5 q6 q7]");
+if size(q,1) ~= 1
+    fprintf("Correct format for q:[q1 q2 q3 q4 q5 q6 q7]\n");
 end
-if size(sphere,1) ~= 4 || size(sphere,2) ~= 1
-    fprintf("Correct format for sphere:[x y z r]");
+if size(sphere,1) ~= 1 || size(sphere,2) ~= 4
+    fprintf("Correct format for sphere:[x y z r]\n");
 end
 
 collide = 0;
 
+[left,right] = mdl_baxter('');
+[T,A] = right.fkine(q);
+
 %%% BAXTER DATA %%%
 % Arm Segment Collision Cylinders
-%        zlength radius (both mm)
-Arms(1,:) = [100 100];
-Arms(2,:) = [100 100];
-Arms(3,:) = [100 100];
-Arms(4,:) = [100 100];
-Arms(5,:) = [100 100];
-Arms(6,:) = [100 100];
-Arms(7,:) = [100 100];
+%        zlength radius (both m)
+Arms(1,:) = [1 0.1];
+Arms(2,:) = [1 0.1];
+Arms(3,:) = [1 0.1];
+Arms(4,:) = [1 0.1];
+Arms(5,:) = [1 0.1];
+Arms(6,:) = [1 0.1];
+Arms(7,:) = [1 0.1];
 % Chest Collision Box
 %        x   y   z
-Body = [100 100 100;...
+body = [1 100 100;...
         100 100 100;...
         100 100 100;...
         100 100 100;...
         100 100 100;...
         100 100 100];
-% Floor Collision Plane
+% Floor collision Plane
 %         x   y   z
-Floor = [100 100 100;...
+floor = [100 100 100;...
          100 100 100;...
          100 100 100;...
          100 100 100];
 numiterations = 6;
+numpoints = 20;
 
 %%% CONVERT TO POINT CLOUDS %%%
-if ~exist('armcloud',1) %Be careful with this, but might speed it up
-    for i = 1:7
-        % circle of desired radius in base frame
-        
-        % copy it by cylinder length
-        
-        % rotate it into the arm frame
-        
-        % end format: [x1 y1 z1; x2 y2 z2; ....]
-        armcloud(i,:) = 0;
+
+for i = 1:7
+    % circle of desired radius in base frame
+    r = Arms(i,2);
+    angles = linspace(0, 2*pi, numpoints+1);
+    X = r * cos(angles(1:numpoints));
+    Y = r * sin(angles(1:numpoints));
+    Z = zeros(1,numpoints);
+    % copy it by cylinder length
+    X = cat(2,X,X);
+    Y = cat(2,Y,Y);
+    Z = cat(2,Z,Z + Arms(i,1));
+    cloud = cat(1,X,Y,Z,ones(1,numpoints*2));
+    % transform it into the arm frame
+    for j = 1:(2 * numpoints)
+        cloud(:,j) = A(i).T*cloud(:,j);
     end
+    % end format: [x1 y1 z1; x2 y2 z2; ....]
+    armcloud(i,:,:) = cloud(1:3,:);
 end
-if ~exist('spherecloud',1)
+if ~exist('spherecloud','var') %Be careful with this, but might speed it up
     
 end
+%%%DEBUG
+% X = 0; Y = 0; Z = 0;
+% for i = 1:7
+%     X1 = squeeze(armcloud(i,1,:)).';
+%     Y1 = squeeze(armcloud(i,2,:)).';
+%     Z1 = squeeze(armcloud(i,3,:)).';
+%     X = [X X1];
+%     Y = [Y Y1];
+%     Z = [Z Z1];
+% end
+% plot3(X,Y,Z)
+%%% END DEBUG
 
 %%% COLLISIONS %%%
 % Arms 2-7 with body:
 for i = 2:7
-    temp1 = GJK(armcloud(i,:),body,numiterations);
+    temp1 = GJK(shape(squeeze(armcloud(i,:,:)).'),shape(body),numiterations);
 end
 
 % Arms 2-7 with sphere:
 for i = 2:7
-    temp1 = GJK(armcloud(i,:),sphere,numiterations);
+    temp1 = GJK(armcloud(i,:,:),sphere,numiterations);
 end
 
 % Arms 5-7 with floor:
@@ -88,7 +114,7 @@ collide = temp1 + temp2 + temp3 + temp4;
 if collide > 1
     collide = 1;
 end
-end
+%end
 
 % Notes:
 %{

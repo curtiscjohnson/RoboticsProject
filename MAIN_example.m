@@ -75,7 +75,7 @@ S2RotDiff = ...
 
 
 % Animation loop. Terminates on collision.
-for i = 3:-0.01:0.2;
+for i = 3:-0.01:0.2
     S1Rot = S1RotDiff*S1Rot;
     S2Rot = S2RotDiff*S2Rot;
     
