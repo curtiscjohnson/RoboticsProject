@@ -1,33 +1,97 @@
 %Name: collisiondetect.m
 %Author: Arnold Wright
 %Date: 2019-11-19
+% Dependencies: MATLAB-GJK-Collision-Detection by Matthew Sheen (github:mws262)
+%               Baxter model (BYU: ME537)
+function [collide] = collisiondetect(q, sphere)
+% Output: Bool: 0 = no collision, 1 = collision
+% Input: q as vector in radians, sphere as [x y z r] in mm
 
-%Variables:
+%Check Variables:
+if size(q,2) ~= 1
+    fprintf("Correct format for q:[q1 q2 q3 q4 q5 q6 q7]");
+end
+if size(sphere,1) ~= 4 || size(sphere,2) ~= 1
+    fprintf("Correct format for sphere:[x y z r]");
+end
 
+collide = 0;
 
-%Code:
+%%% BAXTER DATA %%%
+% Arm Segment Collision Cylinders
+%        zlength radius (both mm)
+Arms(1,:) = [100 100];
+Arms(2,:) = [100 100];
+Arms(3,:) = [100 100];
+Arms(4,:) = [100 100];
+Arms(5,:) = [100 100];
+Arms(6,:) = [100 100];
+Arms(7,:) = [100 100];
+% Chest Collision Box
+%        x   y   z
+Body = [100 100 100;...
+        100 100 100;...
+        100 100 100;...
+        100 100 100;...
+        100 100 100;...
+        100 100 100];
+% Floor Collision Plane
+%         x   y   z
+Floor = [100 100 100;...
+         100 100 100;...
+         100 100 100;...
+         100 100 100];
+numiterations = 6;
 
-% Planned Pseudocode:
-%{
-[boolean:collide] = (1xn:q, 1x4:obstacle_position,radius[x y z r])
-Take in a vector of q's and the 3D position and radius of the object
+%%% CONVERT TO POINT CLOUDS %%%
+if ~exist('armcloud',1) %Be careful with this, but might speed it up
+    for i = 1:7
+        % circle of desired radius in base frame
+        
+        % copy it by cylinder length
+        
+        % rotate it into the arm frame
+        
+        % end format: [x1 y1 z1; x2 y2 z2; ....]
+        armcloud(i,:) = 0;
+    end
+end
+if ~exist('spherecloud',1)
+    
+end
 
-Have some configuration as to the dimensions and sizes of the links
+%%% COLLISIONS %%%
+% Arms 2-7 with body:
+for i = 2:7
+    temp1 = GJK(armcloud(i,:),body,numiterations);
+end
 
-Look for an intersection of the obstacle with each link in turn
+% Arms 2-7 with sphere:
+for i = 2:7
+    temp1 = GJK(armcloud(i,:),sphere,numiterations);
+end
 
-return a binary: 0 = false = no collision
-                 1 = true = collision.
-%}
+% Arms 5-7 with floor:
+for i = 5:7
+    temp3 = GJK(armcloud(i,:),floor,numiterations);
+end
 
+% Arms 4-7 with arms 3+ less than them
+for i = 4:7
+    for j = (i-3):-1:1
+        temp4 = GJK(armcloud(i,:),armcloud(j,:),numiterations);
+    end
+end
+
+% return collide as bool 0/1
+collide = temp1 + temp2 + temp3 + temp4;
+if collide > 1
+    collide = 1;
+end
+end
 
 % Notes:
 %{
-Option 1:
-MATLAB's robotics toolbox (not Peter's) with checkCollision,
-collisionCylinder, collisionSphere.
-
-Option 2: (simpler & faster (used for real-time situations))
 File Exchange GJK algorithm (minimum distance between two convex objects)
 Psuedocode:
  function GJK_intersection(shape p, shape q, vector initial_axis):
