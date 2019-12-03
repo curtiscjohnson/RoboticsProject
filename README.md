@@ -18,5 +18,6 @@ INSTALLATION NOTES -pip3 install rtree didn't work for me, but sudo apt install 
 This is the error message that came with pip install:
 Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-541ysx/rtree/
 
-
-MATLAB 2019a and Peter Corke Robotics Toolbox
+## Collision Detection
+Uses the GJK collision detection found here: https://github.com/mws262/MATLAB-GJK-Collision-Detection (copied into project)
+Simple 3D point clouds defining the collision cylinders for the arms are used, along with a box for Baxter's body, a thin box for the floor, and a sphere for the obstacle.  Only physically possible collisions are checked. Used MATLAB 2019a and Peter Corke Robotics Toolbox
