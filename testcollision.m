@@ -15,8 +15,8 @@ for i = 1:2
                 for m = 1:2
                     for n = 1:2
                         for o = 1:2
-                            c = collisiondetect([i,j,k,l,m,n,o],sphere,right);
-                            fprintf("%.3f %.3f %.3f %.3f %.3f %.3f %.3f :%.f\n",i,j,k,l,m,n,o,c);
+                            c = collisiondetect([i,j,k,l,m,n,o],sphere);
+                            %fprintf("%.3f %.3f %.3f %.3f %.3f %.3f %.3f :%.f\n",i,j,k,l,m,n,o,c);
                             p = p+1;
                         end
                     end

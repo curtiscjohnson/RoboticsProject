@@ -3,7 +3,7 @@
 %Date: 2019-11-19
 % Dependencies: MATLAB-GJK-Collision-Detection by Matthew Sheen (github:mws262)
 %               Baxter model (BYU: ME537)
-function [collide] = collisiondetect(q, sphere,right)
+function [collide] = collisiondetect(q, sphere)
 % Output: Bool: 0 = no collision, 1 = collision
 % Input: q as vector in radians, sphere as [x y z r] in m
 
@@ -19,7 +19,7 @@ end
 
 collide = 0;
 
-%[left,right] = mdl_baxter('');
+[left,right] = mdl_baxter('');
 [T,A] = right.fkine(q);
 
 %%% BAXTER DATA %%%

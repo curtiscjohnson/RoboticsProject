@@ -12,7 +12,7 @@
 % [2] baxter.urdf.xml, Rethink Robotics, Baxter Simulator
 
 % Moritz Schappler, schappler@irt.uni-hannover.de, 2014-07
-% (c) Institut für Regelungstechnik, Universität Hannover
+% (c) Institut fï¿½r Regelungstechnik, Universitï¿½t Hannover
 
 function [Baxter_l, Baxter_r] = mdl_baxter(mode)
 
@@ -156,7 +156,7 @@ else
     % calibration at the end of the manufactoring process
     
     % Extracted from `$ rosrun baxter_pykdl display_urdf.py`
-    fprintf('Loaded Baxter Model in Reality Mode (calibrated data)\n');
+    %fprintf('Loaded Baxter Model in Reality Mode (calibrated data)\n');
     T_tamL = transl([0.0256429, 0.219376, 0.107957]) * ...
         rpy2tr([-0.0033612, -0.00248605, 0.77988]);
     % torso -> right_arm_mount
