@@ -189,11 +189,11 @@ end
 
 end
 
-function point = getFarthestInDir(shape, v)
+function point = getFarthestInDir(shapes, v)
 %Find the furthest point in a given direction for a shape
-XData = shape.XData; % Making it more compatible with previous MATLAB releases.
-YData = shape.YData;
-ZData = shape.ZData;
+XData = shapes.XData; % Making it more compatible with previous MATLAB releases.
+YData = shapes.YData;
+ZData = shapes.ZData;
 dotted = XData*v(1) + YData*v(2) + ZData*v(3);
 [maxInCol,rowIdxSet] = max(dotted);
 [maxInRow,colIdx] = max(maxInCol);
