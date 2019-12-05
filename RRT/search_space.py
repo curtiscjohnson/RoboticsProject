@@ -4,6 +4,10 @@
 import numpy as np
 from rtree import index
 
+#import matlab stuff
+import matlab.engine
+
+
 from geometry import es_points_along_line
 from obstacle_generation import obstacle_generator
 
@@ -15,6 +19,9 @@ class SearchSpace(object):
         :param dimension_lengths: range of each dimension
         :param O: list of obstacles
         """
+        #initialize matlab sesson
+        self.matlab = matlab.engine.start_matlab()
+
         # sanity check
         if len(dimension_lengths) < 2:
             raise Exception("Must have at least 2 dimensions")
@@ -41,10 +48,34 @@ class SearchSpace(object):
     def obstacle_free(self, x):
         """
         Check if a location resides inside of an obstacle
-        :param x: location to check
+        :param x: location to check, same dim as #DOF, 7 in our case. x is a robot configuration.
         :return: True if not inside an obstacle, False otherwise
         """
-        return self.obs.count(x) == 0
+        ## normal RRT
+        #return self.obs.count(x) == 0
+        ## our modification
+        # q needs to be a python list of floats w/ 7 cols and
+        #     sphere needs to be list of floats w/ 4 cols [x y z r]
+        x = np.asarray(x)
+        q = []
+        for i in range(len(x)):
+            val = x[i]
+            q.append(val.item())
+            
+        #print(type(x))
+        #print(type(x[0]))
+        #print(type(q[0]))
+        sphere = [20.0, 20.0, 20.0, 5.0]
+        #print(type(sphere[0]))
+        
+        collision = self.matlab.collisiondetect(q,sphere) #THIS LINE BREAKS IT
+
+        #take care of the fact that matlab function returns 0 
+        #    for no collision but RRT returns true for no collision.
+        if collision == 0:
+            return True
+        else:
+            return False
 
     def sample_free(self):
         """
@@ -52,7 +83,7 @@ class SearchSpace(object):
         :return: random location within X_free
         """
         while True:  # sample until not inside of an obstacle
-            x = self.sample()
+            x = self.sample() 
             if self.obstacle_free(x):
                 return x
 

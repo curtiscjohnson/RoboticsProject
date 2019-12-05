@@ -7,15 +7,12 @@ function [collide] = collisiondetect(q, sphere)
 % Output: Bool: 0 = no collision, 1 = collision
 % Input: q as vector in radians, sphere as [x y z r] in m
 
-dbstop if error
-
 clear armcloud  %%% DEBUG
 
 % Convert python inputs to correct MATLAB data types
 % See https://www.mathworks.com/help/matlab/matlab_external/pass-data-to-matlab-from-python.html
-% list -> cell array
-q = cell2mat(q);
-sphere = cell2mat(sphere);
+% list -> cle
+
 
 
 %Check Variables:
