@@ -21,3 +21,8 @@ Command "python setup.py egg_info" failed with error code 1 in /tmp/pip-build-54
 ## Collision Detection
 Uses the GJK collision detection found here: https://github.com/mws262/MATLAB-GJK-Collision-Detection (copied into project)
 Simple 3D point clouds defining the collision cylinders for the arms are used, along with a box for Baxter's body, a thin box for the floor, and a sphere for the obstacle.  Only physically possible collisions are checked. Used MATLAB 2019a and Peter Corke Robotics Toolbox
+
+## Calling Matlab from Python
+See https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html to install python MATLAB engine.
+
+Once installed, you need to add the matlab engine path to PYTHONPATH. For me, the matlab engine path is '/usr/local/MATLAB/R2019a/extern/engines/python/dist/matlab/engine/glnxa64'.
