@@ -3,7 +3,7 @@
 %Date: 2019-11-19
 % Dependencies: MATLAB-GJK-Collision-Detection by Matthew Sheen (github:mws262)
 %               Baxter model (BYU: ME537)
-function [collide] = collisiondetect(q, sphere)
+function [collide] = collisiondetect(q, spherecoords)
 % Output: Bool: 0 = no collision, 1 = collision
 % Input: q as vector in radians, sphere as [x y z r] in m
 
@@ -22,7 +22,7 @@ sphere = cell2mat(sphere);
 if size(q,1) ~= 1
     fprintf("Correct format for q:[q1 q2 q3 q4 q5 q6 q7]\n");
 end
-if size(sphere,1) ~= 1 || size(sphere,2) ~= 4
+if size(spherecoords,1) ~= 1 || size(spherecoords,2) ~= 4
     fprintf("Correct format for sphere:[x y z r]\n");
 end
 
@@ -43,25 +43,25 @@ Arms(6,:) = [0.01 0.1];
 Arms(7,:) = [0.229525 0.1];
 % Chest Collision Box
 %        x   y   z
-body = [-1  1 -1;...
-        -1 -1 -1;...
-         1 -1 -1;...
-         1  1 -1;...
-        -1  1 -2;...
-        -1 -1 -2;...
-         1 -1 -2;...
-         1  1 -2];
+body = [-0.2  0 1;...
+        0.3 0 1;...
+         0.3 1 1;...
+         -0.2  1 1;...
+        -0.2  0 -1;...
+        0.3 0 -1;...
+         0.3 1 -1;...
+         -0.2  1 -1];
 
 % Floor collision Plane
 %         x   y   z
-floor = [-2  2 -2;...
-         -2 -2 -2;...
-          2 -2 -2;...
-          2  2 -2;...
-         -2  2 -3;...
-         -2 -2 -3;...
-          2 -2 -3;...
-          2  2 -3];
+floor = [-2  2 -1;...
+         -2 -2 -1;...
+          2 -2 -1;...
+          2  2 -1;...
+         -2  2 -1.5;...
+         -2 -2 -1.5;...
+          2 -2 -1.5;...
+          2  2 -1.5];
 numiterations = 6;
 numpoints = 20;
 
@@ -88,26 +88,27 @@ for i = 1:7
     % end format: [x1 y1 z1; x2 y2 z2; ....]
     armcloud(i,:,:) = cloud(1:3,:);
 end
-    x2 = sphere(1);
-    y2 = sphere(2);
-    z2 = sphere(3);
-    r = sphere(4);
-    spherecloud = [];
-    angles = linspace(0, 2*pi, numpoints+1);
-    X = r * cos(angles(1:numpoints));
-    Y = r * sin(angles(1:numpoints));
-    Z = z2 * ones(1,numpoints);
-    scale = sqrt(3)/2;
-    X1 = cat(2,X+x2,scale*X+x2);
-    Y1 = cat(2,Y+y2,scale*Y+y2);
-    Z1 = cat(2,Z,Z + 0.5*r);
-    X1 = cat(2,X1,scale*X+x2);
-    Y1 = cat(2,Y1,scale*Y+y2);
-    Z1 = cat(2,Z1,Z - 0.5*r);
-    X1 = cat(2,X1,x2,x2);
-    Y1 = cat(2,Y1,y2,y2);
-    Z1 = cat(2,Z1,z2+r,z2-r);
-    spherecloud = [X1;Y1;Z1].';
+    x2 = spherecoords(1);
+    y2 = spherecoords(2);
+    z2 = spherecoords(3);
+    r = spherecoords(4);
+    [X,Y,Z] = sphere;
+    [f,spherecloud,c] = surf2patch(X*r+x2,Y*r+y2,Z*r+z2,'triangles');
+%     angles = linspace(0, 2*pi, numpoints+1);
+%     X = r * cos(angles(1:numpoints));
+%     Y = r * sin(angles(1:numpoints));
+%     Z = z2 * ones(1,numpoints);
+%     scale = sqrt(3)/2;
+%     X1 = cat(2,X+x2,scale*X+x2);
+%     Y1 = cat(2,Y+y2,scale*Y+y2);
+%     Z1 = cat(2,Z,Z + 0.5*r);
+%     X1 = cat(2,X1,scale*X+x2);
+%     Y1 = cat(2,Y1,scale*Y+y2);
+%     Z1 = cat(2,Z1,Z - 0.5*r);
+%     X1 = cat(2,X1,x2,x2);
+%     Y1 = cat(2,Y1,y2,y2);
+%     Z1 = cat(2,Z1,z2+r,z2-r);
+%     spherecloud = [X1;Y1;Z1].';
 %%%DEBUG
 % X = 0; Y = 0; Z = 0;
 % for i = 1:7
