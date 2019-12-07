@@ -61,16 +61,16 @@ class SearchSpace(object):
         for i in range(len(x)):
             val = x[i]
             q.append(val.item())
-            
+
         #print(type(x))
         #print(type(x[0]))
         #print(type(q[0]))
-        sphere = [20.0, 20.0, 20.0, 5.0]
+        sphere = [1.0, -0.5, 0.1, 0.3]
         #print(type(sphere[0]))
-        
+
         collision = self.matlab.collisiondetect(q,sphere) #THIS LINE BREAKS IT
 
-        #take care of the fact that matlab function returns 0 
+        #take care of the fact that matlab function returns 0
         #    for no collision but RRT returns true for no collision.
         if collision == 0:
             return True
@@ -83,7 +83,7 @@ class SearchSpace(object):
         :return: random location within X_free
         """
         while True:  # sample until not inside of an obstacle
-            x = self.sample() 
+            x = self.sample()
             if self.obstacle_free(x):
                 return x
 

@@ -26,15 +26,13 @@ class RRT(RRTBase):
 
         while True:
             for q in self.Q:  # iterate over different edge lengths until solution found or time out
-                for i in range(q[1]):  # iterate over number of edges of given length to add
-                    x_new, x_nearest = self.new_and_near(0, q)
+                # for i in range(q[1]):  # iterate over number of edges of given length to add
+                x_new, x_nearest = self.new_and_near(0, q)
+                if x_new is None:
+                    continue
+                # connect shortest valid edge
+                self.connect_to_point(0, x_nearest, x_new)
 
-                    if x_new is None:
-                        continue
-
-                    # connect shortest valid edge
-                    self.connect_to_point(0, x_nearest, x_new)
-
-                    solution = self.check_solution()
-                    if solution[0]:
-                        return solution[1]
+                solution = self.check_solution()
+                if solution[0]:
+                    return solution[1]
