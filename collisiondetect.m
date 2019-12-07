@@ -147,7 +147,7 @@ for i = 4:7
 end
 
 % return collide as bool 0/1
-collide = temp1 + temp2 + temp3 + temp4;
+collide = temp1 + temp3 + temp4;
 if collide > 1
     collide = 1;
 end
