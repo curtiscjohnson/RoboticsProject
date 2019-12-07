@@ -130,9 +130,9 @@ for i = 4:7
 end
 
 % Arms 3-7 with sphere:
-for i = 3:7
-    temp2 = GJK(shape(squeeze(armcloud(i,:,:)).'),shape(spherecloud),numiterations);
-end
+%for i = 3:7
+%    temp2 = GJK(shape(squeeze(armcloud(i,:,:)).'),shape(spherecloud),numiterations);
+%end
 
 % Arms 5-7 with floor:
 for i = 5:7
