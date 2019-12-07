@@ -15,7 +15,7 @@ clear armcloud  %%% DEBUG
 % See https://www.mathworks.com/help/matlab/matlab_external/pass-data-to-matlab-from-python.html
 % list -> cell array
 q = cell2mat(q);
-sphere = cell2mat(sphere);
+spherecoords = cell2mat(spherecoords);
 
 
 %Check Variables:
