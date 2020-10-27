@@ -1,15 +1,15 @@
 function baxter_simulator(path)
     [left, right] = mdl_baxter('');
-%     
-%     path = squeeze(path);
-%     for i = 1:length(path)-1
-%         if mod(i,7) == 1
-%             path2(round((i+6)/7),:) = path(i:i+6);
-%         end
-%     end
-%     
-%     q = cell2mat(path2);
-    q = path;
+    
+    path = squeeze(path);
+    for i = 1:length(path)-1
+        if mod(i,7) == 1
+            path2(round((i+6)/7),:) = path(i:i+6);
+        end
+    end
+    
+    q = cell2mat(path2);
+%     q = path;
     
     
     
